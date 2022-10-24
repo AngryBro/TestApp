@@ -1,0 +1,8 @@
+POST http://localhost/api/user.data.update
+Authorization: Bearer S3KW8n2bYeGj72LcrECQ104lOcjQrTmVY5RDYXa2jcTHWrNpcC7XowrlICXKb8lphkVsY0y0u6Rzl1Nc
+Content-Type: application/json
+
+{
+    "id":2,
+    "password":"teacher"
+}

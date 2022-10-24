@@ -2,43 +2,29 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Hash;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
+    use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    function makeFromRequest($data, $role) {
+        $exists = self::where('login',$data['login'])->first()!==null;
+        if($exists) return false;
+        $this->name = $data['name'];
+        $this->password_hash = Hash::make($data['password']);
+        $this->role_id = Role::where('name', $role)->first()->id;
+        $this->remember_token = Str::random(80);
+        $this->login = $data['login'];
+        $this->group_id = array_key_exists('group_id',$data)?$data['group_id']:null;
+        $this->save();
+        return true;
+    }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
 }

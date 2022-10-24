@@ -13,16 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('student_tests', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('login')->unique();
-            $table->string('password_hash');
-            $table->rememberToken()->unique();
-            $table->foreignIdFor(App\Models\Group::class)->nullable();
-            $table->foreignIdFor(App\Models\Role::class);
+            $table->foreignId('student_id');
+            $table->foreignIdFor(App\Models\Test::class);
+            $table->string('status');
+            $table->time('time_start');
+            $table->time('time_end');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('user_tests');
     }
 };
